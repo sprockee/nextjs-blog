@@ -1,5 +1,4 @@
-// pages/api/decompress.js
-import pako from 'pako';
+import LZString from 'lz-string';
 
 export default function handler(req, res) {
     const { data } = req.query;
@@ -9,8 +8,7 @@ export default function handler(req, res) {
     }
 
     try {
-        const compressed = Uint8Array.from(atob(data), c => c.charCodeAt(0));
-        const decompressed = pako.inflate(compressed, { to: 'string' });
+        const decompressed = LZString.decompressFromBase64(data);
 
         // Process the decompressed data
         res.status(200).json({ decompressed });
