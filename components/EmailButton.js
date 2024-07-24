@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import pako from 'pako';
+import LZString from 'lz-string';
 
 const EmailButton = () => {
     const [compressedUrl, setCompressedUrl] = useState('');
     const [decompressedData, setDecompressedData] = useState('');
 
     const compressAndEncode = (data) => {
-        const compressed = pako.deflate(data, { to: 'string' });
-        return btoa(compressed);
+        const compressed = LZString.compressToBase64(data);
+        return compressed;
     };
 
     const decompressAndDecode = async (encodedData) => {
@@ -17,8 +17,8 @@ const EmailButton = () => {
     };
 
     const handleCompressAndSendEmail = async () => {
-        const baseUrl = 'https://testsite.com/Products/fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices';
-        const dataToCompress = '#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
+        const baseUrl = 'https://testsite.com/Products/';
+        const dataToCompress = 'fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
 
         const encodedData = compressAndEncode(dataToCompress);
         const newCompressedUrl = `${baseUrl}?data=${encodedData}`;
