@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LZString from 'lz-string';
+import pako from 'pako';
 import { Base64 } from 'js-base64';
 
 const EmailButton = () => {
@@ -7,8 +7,8 @@ const EmailButton = () => {
     const [decompressedData, setDecompressedData] = useState('');
 
     const compressAndEncode = (data) => {
-        const compressed = LZString.compress(data);
-        const encoded = Base64.encodeURI(compressed); // URL-safe Base64 encoding
+        const compressed = pako.deflate(data, { to: 'string' });
+        const encoded = Base64.encodeURI(compressed);
         return encoded;
     };
 
@@ -19,8 +19,8 @@ const EmailButton = () => {
     };
 
     const handleCompressAndSendEmail = async () => {
-        const baseUrl = 'https://testsite.com/Products/fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices';
-        const dataToCompress = '#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
+        const baseUrl = 'https://testsite.com/Products/';
+        const dataToCompress = 'fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
 
         const encodedData = compressAndEncode(dataToCompress);
         const newCompressedUrl = `${baseUrl}?data=${encodedData}`;
