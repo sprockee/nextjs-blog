@@ -11,7 +11,7 @@ const EmailButton = () => {
     };
 
     const decompressAndDecode = async (encodedData) => {
-        const response = await fetch(`/api/decompress?data=${encodedData}`);
+        const response = await fetch(`/api/decompress?data=${encodeURIComponent(encodedData)}`);
         const result = await response.json();
         return result.decompressed;
     };
