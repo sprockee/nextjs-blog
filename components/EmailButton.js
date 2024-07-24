@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import pako from 'pako';
 import { Base64 } from 'js-base64';
-import styles from './EmailButton.module.css';
+import styles from './EmailButton.module.css'; // Import the CSS module
 
 const EmailButton = () => {
     const [compressedUrl, setCompressedUrl] = useState('');
@@ -20,8 +20,8 @@ const EmailButton = () => {
     };
 
     const handleCompressAndSendEmail = async () => {
-        const baseUrl = 'https://testsite.com/Products/';
-        const dataToCompress = 'fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
+        const baseUrl = 'https://testsite.com/Products/fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices';
+        const dataToCompress = '#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
 
         const encodedData = compressAndEncode(dataToCompress);
         const newCompressedUrl = `${baseUrl}?data=${encodedData}`;
@@ -32,11 +32,15 @@ const EmailButton = () => {
         // Decompress the data to verify
         const newDecompressedData = await decompressAndDecode(encodedData);
         setDecompressedData(newDecompressedData);
+
+        // Open email client with mailto
+        const mailtoLink = `mailto:?subject=Product Comparison&body=Check out this product comparison: ${newCompressedUrl}`;
+        window.location.href = mailtoLink;
     };
 
     return (
         <div>
-            <button onClick={handleCompressAndSendEmail}>Compress and Show Data</button>
+            <button className={styles.button} onClick={handleCompressAndSendEmail}>Send Email</button>
             <div className={styles.urlContainer}>
                 <h3>Compressed URL:</h3>
                 <p className={styles.url}>{compressedUrl}</p>
