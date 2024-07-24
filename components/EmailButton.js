@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import pako from 'pako';
 import { Base64 } from 'js-base64';
+import styles from './EmailButton.module.css';
 
 const EmailButton = () => {
     const [compressedUrl, setCompressedUrl] = useState('');
@@ -36,13 +37,13 @@ const EmailButton = () => {
     return (
         <div>
             <button onClick={handleCompressAndSendEmail}>Compress and Show Data</button>
-            <div>
+            <div className={styles.urlContainer}>
                 <h3>Compressed URL:</h3>
-                <p>{compressedUrl}</p>
+                <p className={styles.url}>{compressedUrl}</p>
             </div>
-            <div>
+            <div className={styles.urlContainer}>
                 <h3>Decompressed Data:</h3>
-                <p>{decompressedData}</p>
+                <p className={styles.url}>{decompressedData}</p>
             </div>
         </div>
     );
