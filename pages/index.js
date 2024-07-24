@@ -14,7 +14,7 @@ export default function Home() {
 
             <main className={styles.main}>
                 <h1 className={styles.title}>
-                    Welcome to Product Comparison
+                    Share Product Comparison URL via Email
                 </h1>
 
                 <EmailButton />
