@@ -9,7 +9,7 @@ export default function handler(req, res) {
     }
 
     try {
-        const decoded = Base64.decode(data);
+        const decoded = Base64.toUint8Array(data); // Decode to Uint8Array
         const decompressed = pako.inflate(decoded, { to: 'string' });
 
         // Process the decompressed data
