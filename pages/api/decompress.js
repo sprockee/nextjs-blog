@@ -1,4 +1,4 @@
-import LZString from 'lz-string';
+import pako from 'pako';
 import { Base64 } from 'js-base64';
 
 export default function handler(req, res) {
@@ -10,7 +10,7 @@ export default function handler(req, res) {
 
     try {
         const decoded = Base64.decode(data);
-        const decompressed = LZString.decompress(decoded);
+        const decompressed = pako.inflate(decoded, { to: 'string' });
 
         // Process the decompressed data
         res.status(200).json({ decompressed });
