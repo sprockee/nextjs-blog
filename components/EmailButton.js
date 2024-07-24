@@ -34,7 +34,9 @@ const EmailButton = () => {
         setDecompressedData(newDecompressedData);
 
         // Open email client with mailto
-        const mailtoLink = `mailto:?subject=Product Comparison&body=Check out this product comparison: ${newCompressedUrl}`;
+        const truncatedUrl = `${newCompressedUrl.slice(0, 50)}...`;
+        const emailBody = `Checkout this product comparison: <a href="${newCompressedUrl}">${truncatedUrl}</a>`;
+        const mailtoLink = `mailto:?subject=Product Comparison&body=${encodeURIComponent(emailBody)}`;
         window.location.href = mailtoLink;
     };
 
