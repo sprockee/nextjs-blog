@@ -1,3 +1,4 @@
+// pages/api/decompress.js
 import pako from 'pako';
 
 export default function handler(req, res) {
@@ -8,7 +9,7 @@ export default function handler(req, res) {
     }
 
     try {
-        const compressed = atob(data);
+        const compressed = Uint8Array.from(atob(data), c => c.charCodeAt(0));
         const decompressed = pako.inflate(compressed, { to: 'string' });
 
         // Process the decompressed data
