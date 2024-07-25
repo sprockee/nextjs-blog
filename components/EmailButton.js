@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import pako from 'pako';
 import { Base64 } from 'js-base64';
-import styles from './EmailButton.module.css'; // Import the CSS module
+import styles from './EmailButton.module.css';
 
 const EmailButton = () => {
     const [compressedUrl, setCompressedUrl] = useState('');
@@ -35,8 +35,8 @@ const EmailButton = () => {
 
         // Open email client with mailto
         const truncatedUrl = `${newCompressedUrl.slice(0, 50)}...`;
-        const emailBody = `Checkout this product comparison: <a href="${newCompressedUrl}">${truncatedUrl}</a>`;
-        const mailtoLink = `mailto:?subject=Product Comparison&body=${encodeURIComponent(emailBody)}`;
+        const emailBody = `Checkout this product comparison: ${truncatedUrl}`;
+        const mailtoLink = `mailto:?subject=Product Comparison&body=${encodeURIComponent(emailBody)}&body=<a href="${newCompressedUrl}">${truncatedUrl}</a>`;
         window.location.href = mailtoLink;
     };
 
