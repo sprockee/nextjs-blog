@@ -33,10 +33,12 @@ const EmailButton = () => {
         const newDecompressedData = await decompressAndDecode(encodedData);
         setDecompressedData(newDecompressedData);
 
-        // Open email client with mailto
+        // Create a truncated version of the URL for display purposes
         const truncatedUrl = `${newCompressedUrl.slice(0, 50)}...`;
         const emailBody = `Checkout this product comparison: ${truncatedUrl}`;
-        const mailtoLink = `mailto:?subject=Product Comparison&body=${encodeURIComponent(emailBody)}&body=<a href="${newCompressedUrl}">${truncatedUrl}</a>`;
+
+        // Open email client with mailto
+        const mailtoLink = `mailto:?subject=Product Comparison&body=${encodeURIComponent(emailBody)} - Full URL: ${encodeURIComponent(newCompressedUrl)}`;
         window.location.href = mailtoLink;
     };
 
