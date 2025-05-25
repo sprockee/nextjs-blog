@@ -3,54 +3,102 @@ import pako from 'pako';
 import { Base64 } from 'js-base64';
 import styles from './EmailButton.module.css';
 
-const EmailButton = () => {
-    const [compressedUrl, setCompressedUrl] = useState('');
-    const [decompressedData, setDecompressedData] = useState('');
+const EmailButton = ({ url }) => {
+  const [compressedUrl, setCompressedUrl] = useState('');
+  const [decompressedData, setDecompressedData] = useState('');
+  const [error, setError] = useState('');
 
-    const compressAndEncode = (data) => {
-        const compressed = pako.deflate(data, { to: 'string' });
-        const encoded = Base64.encodeURI(compressed);
-        return encoded;
-    };
+  const compressAndEncode = (data) => {
+    try {
+      const compressed = pako.deflate(data, { to: 'string' });
+      const encoded = Base64.encodeURI(compressed);
+      return encoded;
+    } catch (e) {
+      console.error('Compression/Encoding error:', e);
+      setError('Error during data compression.');
+      return null;
+    }
+  };
 
-    const decompressAndDecode = async (encodedData) => {
-        const response = await fetch(`/api/decompress?data=${encodeURIComponent(encodedData)}`);
-        const result = await response.json();
-        return result.decompressed;
-    };
+  // Client-side decompression function
+  const decompressClientSide = (encodedData) => {
+    try {
+      const decodedData = Base64.toUint8Array(encodedData);
+      const decompressed = pako.inflate(decodedData, { to: 'string' });
+      return decompressed;
+    } catch (e) {
+      console.error('Client-side decompression error:', e);
+      setError('Error during data decompression.');
+      return null;
+    }
+  };
 
-    const handleCompressAndSendEmail = async () => {
-        const baseUrl = 'https://testsite.com/Products/';
-        const dataToCompress = 'fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/radial-leaded-polyswitch-resettable-pptc-devices#ImVuYWJsZVF1ZXJ5U3ludGF4PXRydWUmY3E9KCU0MGxldmVsdGhyZWVjYXRlZ29yeSUzRCUzRCUyMlJhZGlhbCUyMExlYWRlZCUyMC0lMjBQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG51bWJlciUzRDcpKCU0MGxldmVsdHdvY2F0ZWdvcnklM0QlM0QlMjJQb2x5U3dpdGNoJUMyJUFFJTIwUmVzZXR0YWJsZSUyMFBQVEMlMjBEZXZpY2VzJTIyKSglNDBsZXZlbG9uZWNhdGVnb3J5JTNEJTNEJTIyRnVzZXMlMjAlMjYlMjBPdmVyY3VycmVudCUyMFByb3RlY3Rpb24lMjIpIg==';
+  const handleCompressAndSendEmail = () => { // Removed async
+    if (!url || url.trim() === '') {
+      setError('Please enter a URL to compress.');
+      setCompressedUrl('');
+      setDecompressedData('');
+      return;
+    }
+    setError('');
 
-        const encodedData = compressAndEncode(dataToCompress);
-        const newCompressedUrl = `${baseUrl}?data=${encodedData}`;
+    const baseUrl = 'https://testsite.com/Products/';
+    const dataToCompress = url;
 
-        // Update state with the compressed URL
-        setCompressedUrl(newCompressedUrl);
+    const encodedData = compressAndEncode(dataToCompress);
 
-        // Decompress the data to verify
-        const newDecompressedData = await decompressAndDecode(encodedData);
-        setDecompressedData(newDecompressedData);
+    if (!encodedData) {
+      // Error already set by compressAndEncode
+      setCompressedUrl('');
+      setDecompressedData('');
+      return;
+    }
 
-        // Open email client with mailto
-        const mailtoLink = `mailto:?subject=Product Comparison&body=Check out this product comparison:${newCompressedUrl}`;
-        window.location.href = mailtoLink;
-    };
+    const newCompressedUrl = `${baseUrl}?data=${encodedData}`;
+    setCompressedUrl(newCompressedUrl);
 
-    return (
-        <div>
-            <button className={styles.button} onClick={handleCompressAndSendEmail}>Send Email</button>
-            <div className={styles.urlContainer}>
-                <h3>Compressed URL:</h3>
-                <p className={styles.url}>{compressedUrl}</p>
-            </div>
-            <div className={styles.urlContainer}>
-                <h3>Decompressed Data:</h3>
-                <p className={styles.url}>{decompressedData}</p>
-            </div>
-        </div>
-    );
+    // Decompress the data client-side to verify
+    const newDecompressedData = decompressClientSide(encodedData);
+    if (newDecompressedData !== null) {
+      setDecompressedData(newDecompressedData);
+    } else {
+      // Error already set by decompressClientSide
+      setDecompressedData('');
+      // Optionally, prevent email sending if decompression fails for verification
+      // For now, we'll still attempt to send the email as the compressed URL is formed.
+    }
+
+    // Open email client with mailto
+    try {
+      const mailtoLink = `mailto:?subject=Product Comparison&body=Check out this product comparison:${newCompressedUrl}`;
+      window.location.href = mailtoLink;
+    } catch (e) {
+      console.error('Failed to open email client:', e);
+      setError('Could not open email client. Please copy the URL manually.');
+      // We still keep compressedUrl and decompressedData visible for the user
+    }
+  };
+
+  return (
+    <div>
+      <button
+        className={styles.button}
+        onClick={handleCompressAndSendEmail}
+        disabled={!url || url.trim() === ''}
+      >
+        Send Email
+      </button>
+      {error && <p className={styles.error}>{error}</p>}
+      <div className={styles.urlContainer}>
+        <h3>Compressed URL:</h3>
+        <p className={styles.url}>{compressedUrl}</p>
+      </div>
+      <div className={styles.urlContainer}>
+        <h3>Decompressed Data:</h3>
+        <p className={styles.url}>{decompressedData}</p>
+      </div>
+    </div>
+  );
 };
 
 export default EmailButton;

@@ -8,7 +8,7 @@
 }
 
 .title a {
-  color: #0070f3;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -24,15 +24,10 @@
   font-size: 3.6rem;
 }
 
-.title {
-  text-align: center;
-}
-
 .title,
 .description {
   text-align: center;
 }
-
 
 .description {
   line-height: 1.5;
@@ -58,14 +53,16 @@
   text-decoration: none;
   border: 1px solid #eaeaea;
   border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .card:hover,
 .card:focus,
 .card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .card h3 {
